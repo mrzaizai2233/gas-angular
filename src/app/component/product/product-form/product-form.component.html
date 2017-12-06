@@ -1,0 +1,49 @@
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+  <div class="panel panel-orange">
+      <div class="panel-body pan">
+          <form (ngSubmit)="onSubmit()" [formGroup]="productGroup">
+              <input type="hidden" formControlName="_id">
+              <div class="form-body pal">
+                  <div class="form-group" >
+                      <div class="input-icon right">
+                        <input type="text" placeholder="Name" class="form-control" formControlName="name">
+                      </div>
+                  </div>
+                  <div class="form-group" >
+                    <div class="input-icon right">
+                      <input type="number" placeholder="Price" class="form-control" formControlName="price">
+                    </div>
+                </div>
+                <div class="form-group" >
+                  <div class="input-icon right">
+                    <input type="number" placeholder="Input Price" class="form-control" formControlName="input_price">
+                  </div>
+              </div>
+              <div class="form-group" >
+                <div class="input-icon right">
+                  <input type="text" placeholder="unit" class="form-control" formControlName="unit">
+                </div>
+            </div>
+            <div class="form-group" >
+              <div class="input-icon right">
+                <select *ngIf="categorys" class="form-control" formControlName="category">
+                  <option *ngFor="let category of categorys" value="{{category._id}}">{{category.name}}</option>
+                </select> 
+              </div>
+          </div>
+                  <div class="form-group">
+                      <select class="form-control" formControlName="status">
+                                      <option value="out_stock">Out Stock</option>
+                                      <option value="in_stock">In Stock</option>
+                      </select>
+                  </div>
+              </div>
+              
+              <div class="form-actions text-right pal">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="reset" class="btn btn-default text-left">Reset</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>

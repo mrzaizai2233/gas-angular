@@ -1,0 +1,87 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "gas"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.css",
+        "assets/vendors/jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css",
+        "assets/vendors/font-awesome/css/font-awesome.min.css",
+        "assets/vendors/bootstrap/css/bootstrap.min.css",
+        "assets/vendors/animate.css/animate.css",
+        "assets/vendors/jquery-pace/pace.css",
+        "assets/vendors/iCheck/skins/all.css",
+        "assets/vendors/jquery-news-ticker/jquery.news-ticker.css",
+        "assets/css/themes/style1/pink-violet.css",
+        "assets/css/style-responsive.css"
+      ],
+      "scripts": [
+        "assets/js/jquery-1.10.2.min.js",
+        "assets/js/jquery-migrate-1.2.1.min.js",
+        "assets/js/jquery-ui.js",
+        "assets/vendors/bootstrap/js/bootstrap.min.js",
+        "assets/vendors/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js",
+        "assets/js/html5shiv.js",
+        "assets/js/respond.min.js",
+        "assets/vendors/metisMenu/jquery.metisMenu.js",
+        "assets/vendors/slimScroll/jquery.slimscroll.js",
+        "assets/vendors/jquery-cookie/jquery.cookie.js",
+        "assets/vendors/iCheck/icheck.min.js",
+        "assets/vendors/iCheck/custom.min.js",
+        "assets/vendors/jquery-news-ticker/jquery.news-ticker.js",
+        "assets/js/jquery.menu.js",
+        "assets/vendors/jquery-pace/pace.min.js",
+        "assets/vendors/holder/holder.js",
+        "assets/vendors/responsive-tabs/responsive-tabs.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "src/tsconfig.spec.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "css",
+    "component": {}
+  }
+}
