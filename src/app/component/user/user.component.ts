@@ -33,27 +33,34 @@ export class UserComponent implements OnInit {
       this.userService.create(user).subscribe(res=>{
         this.users.push(user)
       })
-    } else {
+    } 
+    else {
       this.userService.edit(user).subscribe((res:any)=>{
-        let users= this.users
         for(let i=0;i<this.users.length;i++){
           if(this.users[i]._id==res._id){
             this.users[i]=res;
-            this.status="create";
-                        console.log(this.users)
-
+            break;
           }
         }
-
-      })
+        this.status="create";              })
     }
+    this.userForm.reset()
   }
   edit(user){
     this.status="update";
       this.userForm.patchValue(user);
   }
-  delete(){
-
+  delete(user_id){
+    this.userForm.reset();
+    this.status="create";
+    this.userService.delete(user_id).subscribe((res:any) =>{
+      for(let i=0;i<this.users.length;i++){
+        if(this.users[i]._id==res._id){
+          this.users.splice(i,1)
+          break;
+        }
+      }
+    })
   }
   getStatusText(status){
     if(status=='1')

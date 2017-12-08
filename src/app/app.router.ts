@@ -3,9 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule,Routes } from '@angular/router';
 
 const routerConfig:Routes = [
-    {
-        path:'',component:ErrorComponent,
-    },
+
     {
         path:'category',
         loadChildren:'app/component/category/category.module#CategoryModule'
@@ -15,7 +13,7 @@ const routerConfig:Routes = [
         loadChildren:'app/component/product/product.module#ProductModule'
     },
     {
-        path:'order',
+        path:'',
         loadChildren:'app/component/order/order.module#OrderModule'
     }
     ,
