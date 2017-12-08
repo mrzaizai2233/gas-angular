@@ -13,6 +13,15 @@ const routerConfig:Routes = [
     {
         path:'product',
         loadChildren:'app/component/product/product.module#ProductModule'
+    },
+    {
+        path:'order',
+        loadChildren:'app/component/order/order.module#OrderModule'
+    }
+    ,
+    {
+        path:'user',
+        loadChildren:'app/component/user/user.module#UserModule'
     }
 ]
 

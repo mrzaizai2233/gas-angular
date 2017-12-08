@@ -7,13 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit {
-  products:any;
+  products=[];
   status="create";
   constructor(private _productSV:ProductService) {
-    this._productSV.products().subscribe(res=> {this.products=res} )
+    this._productSV.products().subscribe(res=> {
+     this.products = this.products.concat.apply(this.products,res)
+    })
     this._productSV.productEmiter.subscribe(res=>{
-      console.log(res)
-      if(this.products.length>0){
         this.products.forEach((product,index) => {
           if(product._id==res._id){
             this.products[index]=res;
@@ -24,11 +24,6 @@ export class ProductComponent implements OnInit {
           this.products.push(res);
         }
         this.status="create";
-      } else {
-        this.products.push(res);
-      }
-     
-
     })
    }
 

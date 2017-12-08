@@ -20,7 +20,6 @@ export class ProductFormComponent implements OnInit {
       category:['',[Validators.required]],
       unit:['',[Validators.required]],
       status:['',[Validators.required]],
-      __v:''
     })
    }
 
@@ -37,20 +36,29 @@ export class ProductFormComponent implements OnInit {
   onSubmit(){
     let product = this.productGroup.value;
     if(this.status=="create"){
-        this._productSV.create(product).subscribe(res=>{
+        this._productSV.create(product).subscribe((res:any)=>{
+          this.categorys.forEach(element => {
+            if(res.category == element._id){
+              res.category = element;
+            }
+        });
           this._productSV.emitProduct(res)
           this.productGroup.reset();
         })
 
     } else {
-      if(product._id){
         
-      this._productSV.edit(product).subscribe(res=>{
+      this._productSV.edit(product).subscribe((res:any)=>{
+        this.categorys.forEach(element => {
+            if(res.category == element._id){
+              res.category = element;
+            }
+        });
+        console.log(res);
         this._productSV.emitProduct(res);
         this.productGroup.reset();
         this.status="create";
       })
-    }
     
     }
   }
