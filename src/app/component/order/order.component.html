@@ -6,13 +6,14 @@
 
         </div>
         <div class="panel-body">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="panel panel-orange">
-                        <div class="panel-body pan">
-                            <form (ngSubmit)="1" [formGroup]="1">
-                                <input type="hidden" formControlName="_id">
-                                <div class="form-body pal">
+            <form (ngSubmit)="onSubmit()" [formGroup]="orderForm">
+                <input type="hidden" formControlName="_id">
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="panel panel-orange">
+                            <div class="panel-body pan">
+                                <div class="form-body pal" formGroupName="user">
 
                                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 
@@ -26,6 +27,10 @@
                                                 <input type="text" placeholder="Mã Khách Hàng" class="form-control" formControlName="code">
                                             </div>
                                         </div>
+
+                                    </div>
+
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         <div class="form-group">
                                             <div class="input-icon right">
                                                 <input type="text" placeholder="Địa Chỉ" class="form-control" formControlName="adress">
@@ -36,15 +41,8 @@
                                                 <input type="text" placeholder="Số Điện Thoại" class="form-control" formControlName="phone">
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="">Trạng Thái
-                                <select class="form-control" formControlName="status">
-                                                <option value="1">Bật</option>
-                                                <option value="0">Tắt</option>
-                                </select>
-                              </label>
-                                        </div>
                                     </div>
+
 
                                 </div>
 
@@ -52,11 +50,92 @@
                                     <button type="submit" class="btn btn-primary">Lưu</button>
                                     <button type="reset" class="btn btn-default text-left">Làm Mới</button>
                                 </div>
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="panel panel-orange">
+                            <div class="panel-body pan">
+                                <div class="form-body pal">
+
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+
+                                        <div class="form-group">
+                                            <div class="input-icon right">
+                                                <input type="text" placeholder="Tổng giá trị" class="form-control" formControlName="grand_total">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-icon right">
+                                                <input type="text" placeholder="Số tiền đã trả" class="form-control" formControlName="subtotal">
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="panel panel-orange">
+                            <div class="panel-heading clearfix">
+                                <button (click)="addItem()" class="btn btn-primary">Thêm Sản Phẩm</button>
+                            </div>
+                            <div class="panel-body pan">
+                                <div class="form-body pal" formGroupName="items">
+                                    {{items.controls}}
+                                    <div *ngFor="let item of items.controls; let i=index" [formGroupName]="i">
+
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 {{i}}">
+                                            <div class="form-group">
+                                                <div class="input-icon right">
+                                                    <input type="text" placeholder="Tên Sản Phẩm" class="form-control" formControlName="product">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-icon right">
+                                                    <input type="number" placeholder="Số Lượng" class="form-control" formControlName="qty">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-icon right">
+                                                    <input type="number" placeholder="Đơn Giá" class="form-control" formControlName="price">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <div class="input-icon right">
+                                                    <input type="text" placeholder="Kiểu Giảm Giá" class="form-control" formControlName="discout">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-icon right">
+                                                    <input type="text" placeholder="Giá Trị Giảm Giá" class="form-control" formControlName="discout_total">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-icon right">
+                                                    <input type="text" placeholder="Ghi Chú" class="form-control" formControlName="note">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="button" (click)="removeItem(i)" value="Xóa Sản Phẩm" class="btn btn-danger">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
+
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="table-responsive">
@@ -71,12 +150,12 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody *ngIf="1 ">
-                                <tr *ngFor="let user of 1  " (click)="1">
-                                    <td>{{user.name}}</td>
-                                    <td>{{user.code}}</td>
-                                    <td>{{user.adress}}</td>
-                                    <td>{{user.phone}}</td>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     <!-- <td>{{getStatusText(1)}}</td> -->
                                     <td><button type="button" class="btn btn-danger" (click)="1">Xóa</button></td>
                                 </tr>
