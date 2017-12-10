@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { HttpModule } from '@angular/http';
 import { FormsModule ,ReactiveFormsModule}   from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { CommonModule } from '@angular/common';
     HttpModule,
     FormsModule,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    Ng2AutoCompleteModule
   ],
   providers: [CategoryService],
   bootstrap: [AppComponent]
