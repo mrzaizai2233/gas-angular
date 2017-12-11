@@ -4,7 +4,7 @@ import { UserService } from './../../service/user.service';
 import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-
+import {Observable} from 'rxjs/Observable'
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
@@ -14,6 +14,7 @@ export class OrderComponent implements OnInit {
   orderForm:FormGroup;
   users;
   products;
+  orders;
   user={
     name:"",
     adress:"",
@@ -23,6 +24,7 @@ export class OrderComponent implements OnInit {
   constructor(private fb:FormBuilder,private _userService:UserService,private _productService:ProductService,private _sanitizer:DomSanitizer,private _orderService:OrderService) {
     this._userService.users().subscribe(res => this.users=res)
     this._productService.products().subscribe(res=>this.products=res)
+    this._orderService.orders().subscribe(res=>this.orders=res)
    }
    autocompleListFormatter = (data: any) : SafeHtml => {
     let html = `<span>${data.name}</span>`;
@@ -38,12 +40,13 @@ export class OrderComponent implements OnInit {
     })
     this.orderForm.get('items').valueChanges.subscribe(res=>{
       var total=0;
+      var sub_total=0;
       res.forEach(element => {
         if(element.price!=''){
           total+= (element.price * element.qty);
         }
       });
-      this.orderForm.patchValue({grand_total:total})
+      this.orderForm.patchValue({grand_total:total,sub_total:total})
     })
   }
   valueUserChanged(newVal) {

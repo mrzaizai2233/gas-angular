@@ -155,20 +155,22 @@
                     <table class="table table-hover table-bordered">
                        <thead>
                           <tr>
-                             <th>Tên</th>
-                             <th>Mã Khách Hàng</th>
-                             <th>Địa Chỉ</th>
+                             <th>Tên Khách Hàng</th>
                              <th>Số Điện Thoại</th>
+                             <th>Tổng Tiền</th>                             
                              <th>Trạng Thái</th>
+                             <th></th>
                              <th>Action</th>
                           </tr>
                        </thead>
-                       <tbody>
-                          <tr>
+                       <tbody *ngIf="orders">
+                          <tr *ngFor="let order of orders">
+                             <td>{{order.user.name}}</td>
+                             <td>{{order.user.phone}}</td>
+                             <td>{{order.grand_total}}</td>
                              <td></td>
                              <td></td>
-                             <td></td>
-                             <td></td>
+                             
                              <!-- <td>{{getStatusText(1)}}</td> -->
                              <td><button type="button" class="btn btn-danger" (click)="1">Xóa</button></td>
                           </tr>
