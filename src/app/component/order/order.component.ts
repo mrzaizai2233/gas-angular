@@ -4,7 +4,7 @@ import { UserService } from './../../service/user.service';
 import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-
+import {Observable} from 'rxjs/Observable'
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
@@ -14,6 +14,7 @@ export class OrderComponent implements OnInit {
   orderForm:FormGroup;
   users;
   products;
+  orders=[];
   user={
     name:"",
     adress:"",
@@ -23,6 +24,9 @@ export class OrderComponent implements OnInit {
   constructor(private fb:FormBuilder,private _userService:UserService,private _productService:ProductService,private _sanitizer:DomSanitizer,private _orderService:OrderService) {
     this._userService.users().subscribe(res => this.users=res)
     this._productService.products().subscribe(res=>this.products=res)
+    this._orderService.orders().subscribe(res=>
+      this.orders=this.orders.concat.apply(this.orders,res)
+    )
    }
    autocompleListFormatter = (data: any) : SafeHtml => {
     let html = `<span>${data.name}</span>`;
@@ -38,12 +42,13 @@ export class OrderComponent implements OnInit {
     })
     this.orderForm.get('items').valueChanges.subscribe(res=>{
       var total=0;
+      var sub_total=0;
       res.forEach(element => {
         if(element.price!=''){
           total+= (element.price * element.qty);
         }
       });
-      this.orderForm.patchValue({grand_total:total})
+      this.orderForm.patchValue({grand_total:total,sub_total:total})
     })
   }
   valueUserChanged(newVal) {
@@ -80,9 +85,37 @@ export class OrderComponent implements OnInit {
   removeItem(index){
           this.items.removeAt(index)
   }
+  editOrder(order){
+    this.user= order.user;
+    this.orderForm.patchValue({
+      _id:order._id,
+      grand_total:order.grand_total,
+      user:order.user._id,
+    })
+    const items=[];
+    order.items.forEach(element => {
+        items.push(this.fb.group(element))
+    });
+   
+    const itemsFAs = this.fb.array(items);
+    if(items.length>0){
+      this.orderForm.setControl('items',itemsFAs);
+      
+    }
+   console.log(this.items);
+  }
 
   onSubmit(){
     this._orderService.create(this.orderForm.value).subscribe(res=>console.log(res))
   }
-
+  delete(order_id){
+    this._orderService.delete(order_id).subscribe((res:any)=>{
+      for(let i=0;i<this.orders.length;i++){
+        if(this.orders[i]._id==res._id){
+          this.orders.splice(i,1)
+          break;
+        }
+      }
+    })
+  }
 }
