@@ -15,6 +15,7 @@ export class OrderComponent implements OnInit {
   users;
   products;
   orders=[];
+  product_name="";
   user={
     name:"",
     adress:"",
@@ -41,6 +42,7 @@ export class OrderComponent implements OnInit {
       items:this.fb.array([])
     })
     this.orderForm.get('items').valueChanges.subscribe(res=>{
+      console.log("change");
       var total=0;
       var sub_total=0;
       res.forEach(element => {
@@ -48,7 +50,7 @@ export class OrderComponent implements OnInit {
           total+= (element.price * element.qty);
         }
       });
-      this.orderForm.patchValue({grand_total:total,sub_total:total})
+      this.orderForm.patchValue({grand_total:total,subtotal:total})
     })
   }
   valueUserChanged(newVal) {
@@ -61,11 +63,6 @@ export class OrderComponent implements OnInit {
   valueProductChanged(newVal,i){
     this.items.controls[i].patchValue({price:newVal.price,product:newVal._id})
     this.items.controls[i].value.product=newVal._id;
-    // this.sum(newVal.price)
-  }
-  sum(price){
-      var total = this.orderForm.get('grand_total').value;
-      this.orderForm.patchValue({grand_total:total})
   }
   get items(){
     return this.orderForm.get('items') as FormArray;
@@ -92,9 +89,12 @@ export class OrderComponent implements OnInit {
       grand_total:order.grand_total,
       user:order.user._id,
     })
+    this.items.controls=[]
+    // const arr = <FormArray>this.orderForm.controls.items;
+    // arr.controls = [];
     const items=[];
     order.items.forEach(element => {
-        items.push(this.fb.group(element))
+      this.items.push(this.fb.group(element))
     });
    
     const itemsFAs = this.fb.array(items);
@@ -102,17 +102,20 @@ export class OrderComponent implements OnInit {
       this.orderForm.setControl('items',itemsFAs);
       
     }
-   console.log(this.items);
   }
 
   onSubmit(){
-    this._orderService.create(this.orderForm.value).subscribe(res=>console.log(res))
+      console.log(this.orderForm.value)
+    this._orderService.create(this.orderForm.value).subscribe(res=>{
+      this.orders.push(res);
+    })
   }
-  delete(order_id){
+  delete(order_id,index){         
+    // console.log(this.orderForm.value)
     this._orderService.delete(order_id).subscribe((res:any)=>{
       for(let i=0;i<this.orders.length;i++){
-        if(this.orders[i]._id==res._id){
-          this.orders.splice(i,1)
+        if(this.orders[i]._id==res){
+               this.orders.splice(i,1);
           break;
         }
       }

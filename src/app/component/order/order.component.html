@@ -78,7 +78,7 @@
                                                 <div class="input-icon right">
                                                     <input type="hidden" placeholder="Số Lượng" class="form-control" formControlName="product">
 
-                                                    <input ng2-auto-complete [source]="products" [list-formatter]="autocompleListFormatter" (valueChanged)="valueProductChanged($event,i)" display-property-name="name" placeholder="Tên Sản Phẩm" class="form-control" [ngModel]="" [ngModelOptions]="{standalone: true}">
+                                                    <input ng2-auto-complete [source]="products" [list-formatter]="autocompleListFormatter" (valueChanged)="valueProductChanged($event,i)" display-property-name="name" placeholder="Tên Sản Phẩm" class="form-control" [ngModel]="product_name" [ngModelOptions]="{standalone: true}">
                                                 </div>
                                             </div>
                                         </div>
