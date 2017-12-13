@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { OrderService } from './../../service/order.service';
 import { ProductService } from './../../service/product.service';
 import { UserService } from './../../service/user.service';
@@ -15,13 +16,6 @@ export class OrderComponent implements OnInit {
   users;
   products;
   orders=[];
-  product_name="";
-  user={
-    name:"",
-    adress:"",
-    code:"",
-    phone:""
-  }
   constructor(private fb:FormBuilder,private _userService:UserService,private _productService:ProductService,private _sanitizer:DomSanitizer,private _orderService:OrderService) {
     this._userService.users().subscribe(res => this.users=res)
     this._productService.products().subscribe(res=>this.products=res)
@@ -36,13 +30,18 @@ export class OrderComponent implements OnInit {
   ngOnInit() {
     this.orderForm = this.fb.group({
       _id:[],
-      user:[],
+      user:this.fb.group({
+        _id:[],
+        name:[],
+        adress:[],
+        code:[],
+        phone:[]
+      }),
       grand_total:[],
       subtotal:[],
       items:this.fb.array([])
     })
     this.orderForm.get('items').valueChanges.subscribe(res=>{
-      console.log("change");
       var total=0;
       var sub_total=0;
       res.forEach(element => {
@@ -53,16 +52,25 @@ export class OrderComponent implements OnInit {
       this.orderForm.patchValue({grand_total:total,subtotal:total})
     })
   }
-  valueUserChanged(newVal) {
-    this.user.name = newVal.name;
-    this.user.adress = newVal.adress;
-    this.user.code = newVal.code;
-    this.user.phone = newVal.phone;
-    this.orderForm.patchValue({user:newVal._id})
+  valueUserChanged(value){
+    console.log(value)
+        this.orderForm.get('user').patchValue({
+          _id:value._id,
+          name:value.name,
+          adress:value.adress,
+          code:value.code,
+          phone:value.phone
+        })
   }
-  valueProductChanged(newVal,i){
-    this.items.controls[i].patchValue({price:newVal.price,product:newVal._id})
-    this.items.controls[i].value.product=newVal._id;
+  valueProductChanged(value,i){
+    console.log(value);
+    this.items.controls[i].patchValue({
+      product:{
+        _id:value._id,
+        name:value.name
+      },
+      price:value.price,
+    })
   }
   get items(){
     return this.orderForm.get('items') as FormArray;
@@ -71,7 +79,11 @@ export class OrderComponent implements OnInit {
   addItem(){
    
     this.items.push(this.fb.group({
-      product:'',
+      _id:[],
+      product:this.fb.group({
+        _id:[],
+        name:[]
+      }),
       qty:1,
       price:'',
       discout:'',
@@ -83,33 +95,66 @@ export class OrderComponent implements OnInit {
           this.items.removeAt(index)
   }
   editOrder(order){
-    this.user= order.user;
+      console.log(order.user);
     this.orderForm.patchValue({
       _id:order._id,
       grand_total:order.grand_total,
-      user:order.user._id,
+      user:{
+        _id:order.user._id,
+        name:order.user.name,
+        code:order.user.code,
+        address:order.user.address,
+        phone:order.user.phone
+      },
     })
     this.items.controls=[]
     // const arr = <FormArray>this.orderForm.controls.items;
     // arr.controls = [];
     const items=[];
     order.items.forEach(element => {
-      this.items.push(this.fb.group(element))
+      const item = this.fb.group({
+        discout:element.discout,
+        discout_total:element.discout_total,
+        note:element.note,
+        order:element.order,
+        price:element.price,
+        product:this.fb.group({
+          _id:element.product._id,
+          name:element.product.name
+        }),
+        qty:element.qty,
+        _id:element._id,
+      })
+      this.items.push(item)
     });
-   
-    const itemsFAs = this.fb.array(items);
-    if(items.length>0){
-      this.orderForm.setControl('items',itemsFAs);
+  //  console.log(items)
+  //   const itemsFAs = this.fb.array(items);
+  //   if(items.length>0){
+  //     this.orderForm.setControl('items',itemsFAs);
       
-    }
+  //   }
   }
-
   onSubmit(){
-      console.log(this.orderForm.value)
-    this._orderService.create(this.orderForm.value).subscribe(res=>{
+    console.log(this.orderForm.value)
+    const order = this.preSave();
+      // console.log(this.preSave());
+    this._orderService.create(order).subscribe(res=>{
       this.orders.push(res);
     })
   }
+  preSave(){
+    const order=this.orderForm.value;
+    order.user = order.user._id;
+    const items=[];
+    for(let i=0;i<this.items.length;i++){
+      let item =this.items.controls[i].value;
+      item.product =  this.items.controls[i].value.product._id;
+      items.push(item)
+    }
+    order.items = items;
+    return order;
+  }
+
   delete(order_id,index){         
     // console.log(this.orderForm.value)
     this._orderService.delete(order_id).subscribe((res:any)=>{

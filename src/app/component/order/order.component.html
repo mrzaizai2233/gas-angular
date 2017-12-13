@@ -10,29 +10,29 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="panel panel-orange">
                             <div class="panel-body pan">
-                                <div class="form-body pal">
+                                <div class="form-body pal" formGroupName="user">
+                                    <input type="hidden" formControlName="_id">
                                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                        <input type="hidden" formControlName="user">
                                         <div class="form-group">
                                             <div class="input-icon right">
-                                                <input ng2-auto-complete [source]="users" [list-formatter]="autocompleListFormatter" (valueChanged)="valueUserChanged($event)" placeholder="Tên Khách Hàng" class="form-control" [ngModel]="user.name" [ngModelOptions]="{standalone: true}">
+                                                <input ng2-auto-complete [source]="users" [list-formatter]="autocompleListFormatter" (valueChanged)="valueUserChanged($event)" placeholder="Tên Khách Hàng" class="form-control" formControlName="name">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="input-icon right">
-                                                <input [readonly]="true" type="text" placeholder="Mã Khách Hàng" class="form-control" [ngModel]="user.code" [ngModelOptions]="{standalone: true}">
+                                                <input [readonly]="true" type="text" placeholder="Mã Khách Hàng" class="form-control" formControlName="code">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         <div class="form-group">
                                             <div class="input-icon right">
-                                                <input [readonly]="true" type="text" placeholder="Địa Chỉ" class="form-control" [ngModel]="user.adress" [ngModelOptions]="{standalone: true}">
+                                                <input [readonly]="true" type="text" placeholder="Địa Chỉ" class="form-control" formControlName="adress">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="input-icon right">
-                                                <input [readonly]="true" type="text" placeholder="Số Điện Thoại" class="form-control" [ngModel]="user.phone" [ngModelOptions]="{standalone: true}">
+                                                <input [readonly]="true" type="text" placeholder="Số Điện Thoại" class="form-control" formControlName="phone">
                                             </div>
                                         </div>
                                     </div>
@@ -72,13 +72,14 @@
                             <div class="panel-body pan">
                                 <div class="form-body pal" formGroupName="items">
                                     <div *ngFor="let item of items.controls; let i=index" [formGroupName]="i">
+                                        <input type="hidden" formControlName="_id">
                                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                             <div class="form-group">
                                                 <label for="" class="control-label">Tên sản phẩm <span class="require">*</span></label>
-                                                <div class="input-icon right">
-                                                    <input type="hidden" placeholder="Số Lượng" class="form-control" formControlName="product">
+                                                <div class="input-icon right" formGroupName="product">
+                                                    <input type="hidden" placeholder="Số Lượng" class="form-control" formControlName="_id">
 
-                                                    <input ng2-auto-complete [source]="products" [list-formatter]="autocompleListFormatter" (valueChanged)="valueProductChanged($event,i)" display-property-name="name" placeholder="Tên Sản Phẩm" class="form-control" [ngModel]="product_name" [ngModelOptions]="{standalone: true}">
+                                                    <input ng2-auto-complete [source]="products" [list-formatter]="autocompleListFormatter" (valueChanged)="valueProductChanged($event,i)" display-property-name="name" placeholder="Tên Sản Phẩm" class="form-control" formControlName="name">
                                                 </div>
                                             </div>
                                         </div>
