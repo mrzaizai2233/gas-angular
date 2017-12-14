@@ -3,15 +3,18 @@ import { OrderService } from './../../service/order.service';
 import { ProductService } from './../../service/product.service';
 import { UserService } from './../../service/user.service';
 import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, ElementRef,ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import {Observable} from 'rxjs/Observable'
+import 'rxjs/add/observable/fromEvent';
+import { myEvent,product } from './order';
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.css']
 })
 export class OrderComponent implements OnInit {
+  @ViewChild('user') input: ElementRef;
   orderForm:FormGroup;
   users;
   products;
@@ -27,6 +30,9 @@ export class OrderComponent implements OnInit {
     let html = `<span>${data.name}</span>`;
     return this._sanitizer.bypassSecurityTrustHtml(html);
   }
+  testchange(test:myEvent){
+    console.log(test.target.value)
+  }
   ngOnInit() {
     this.orderForm = this.fb.group({
       _id:[],
@@ -41,6 +47,11 @@ export class OrderComponent implements OnInit {
       subtotal:[],
       items:this.fb.array([])
     })
+    const inputEle = <HTMLInputElement>this.input.nativeElement;
+    Observable.fromEvent<any>(inputEle, 'keyup')
+      .subscribe(data => console.log(data.target.value));
+
+
     this.orderForm.get('items').valueChanges.subscribe(res=>{
       var total=0;
       var sub_total=0;
@@ -53,7 +64,6 @@ export class OrderComponent implements OnInit {
     })
   }
   valueUserChanged(value){
-    console.log(value)
         this.orderForm.get('user').patchValue({
           _id:value._id,
           name:value.name,
@@ -62,30 +72,30 @@ export class OrderComponent implements OnInit {
           phone:value.phone
         })
   }
-  valueProductChanged(value,i){
-    console.log(value);
-    this.items.controls[i].patchValue({
+  valueProductChanged(value:product,i){
+   value && this.items.controls[i].patchValue({
       product:{
         _id:value._id,
         name:value.name
       },
       price:value.price,
     })
+    console.log(this.items.controls[i].value)
   }
   get items(){
     return this.orderForm.get('items') as FormArray;
   }
 
-  addItem(){
+  addItem(product){
    
     this.items.push(this.fb.group({
       _id:[],
       product:this.fb.group({
-        _id:[],
-        name:[]
+        _id:product?product._id:'',
+        name:product?product.name:''
       }),
       qty:1,
-      price:'',
+      price:product?product.price:'',
       discout:'',
       discout_total:'',
       note:'',
@@ -165,5 +175,8 @@ export class OrderComponent implements OnInit {
         }
       }
     })
+  }
+  ngAfterViewInit() {
+    // Component views are initialized
   }
 }

@@ -4,6 +4,7 @@
             Khách Hàng
         </div>
         <div class="panel-body">
+            <!-- <input type="text" #input (change)="testchange($event)"> -->
             <form (ngSubmit)="onSubmit()" [formGroup]="orderForm">
                 <input type="hidden" formControlName="_id">
                 <div class="row">
@@ -15,7 +16,7 @@
                                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         <div class="form-group">
                                             <div class="input-icon right">
-                                                <input ng2-auto-complete [source]="users" [list-formatter]="autocompleListFormatter" (valueChanged)="valueUserChanged($event)" placeholder="Tên Khách Hàng" class="form-control" formControlName="name">
+                                                <input ng2-auto-complete [source]="users" [list-formatter]="autocompleListFormatter" #user (valueChanged)="valueUserChanged($event)" placeholder="Tên Khách Hàng" class="form-control" formControlName="name">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -37,10 +38,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-actions text-right pal">
-                                    <button type="submit" class="btn btn-primary">Lưu</button>
-                                    <button type="reset" class="btn btn-default text-left">Làm Mới</button>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -70,70 +68,82 @@
                                 Sản Phẩm
                             </div>
                             <div class="panel-body pan">
-                                <div class="form-body pal" formGroupName="items">
-                                    <div *ngFor="let item of items.controls; let i=index" [formGroupName]="i">
-                                        <input type="hidden" formControlName="_id">
-                                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                            <div class="form-group">
-                                                <label for="" class="control-label">Tên sản phẩm <span class="require">*</span></label>
-                                                <div class="input-icon right" formGroupName="product">
-                                                    <input type="hidden" placeholder="Số Lượng" class="form-control" formControlName="_id">
+                                <div class="form-body pal no-padding">
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 no-padding list-product">
+                                        <table class="table table-hover table-bordered no-margin">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Tên sản phẩm</th>
+                                                    <th>Đơn giá</th>
+                                                    <th>Giá nhập</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let product of products" (click)="addItem(product)">
+                                                    <td>{{product.code}}</td>
+                                                    <td>{{product.name}}</td>
+                                                    <td>{{product.price}}</td>
+                                                    <td>{{product.input_price}}</td>
+                                                </tr>
 
-                                                    <input ng2-auto-complete [source]="products" [list-formatter]="autocompleListFormatter" (valueChanged)="valueProductChanged($event,i)" display-property-name="name" placeholder="Tên Sản Phẩm" class="form-control" formControlName="name">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                            <div class="form-group">
-                                                <label for="" class="control-label">Số lượng<span class="require">*</span></label>
-                                                <div class="input-icon right">
-                                                    <input type="number" placeholder="Số Lượng" class="form-control" formControlName="qty">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                            <div class="form-group">
-                                                <label for="" class="control-label">Đơn giá<span class="require">*</span></label>
+                                            </tbody>
 
-                                                <div class="input-icon right">
-                                                    <input type="number" placeholder="Đơn Giá" class="form-control" formControlName="price">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                                            <div class="form-group">
-                                                <label for="" class="control-label">Kiểu giảm<span class="require">*</span></label>
-
-                                                <div class="input-icon right">
-                                                    <input type="text" placeholder="Kiểu Giảm Giá" class="form-control" formControlName="discout">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                            <div class="form-group">
-                                                <label for="" class="control-label">Giá trị giảm giá<span class="require">*</span></label>
-
-                                                <div class="input-icon right">
-                                                    <input type="text" placeholder="Giá Trị Giảm Giá" class="form-control" formControlName="discout_total">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                            <div class="form-group">
-                                                <label for="" class="control-label">Ghi chú<span class="require">*</span></label>
-                                                <div class="input-icon right">
-                                                    <input type="text" placeholder="Ghi Chú" class="form-control" formControlName="note">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                                            <input type="button" (click)="removeItem(i)" value="Xóa Sản Phẩm" class="btn btn-danger">
-                                        </div>
+                                        </table>
                                     </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 list-product" formGroupName="items">
+                                        <table class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tên sản phẩm</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Đơn giá</th>
+                                                    <th>Giảm %</th>
+                                                    <th>Giảm tiền</th>
+                                                    <th>Ghi chú</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let item of items.controls; let i=index" [formGroupName]="i">
+
+                                                    <input type="hidden" formControlName="_id">
+                                                    <td>
+                                                        <div formGroupName="product">
+                                                            <input type="hidden" formControlName="_id">
+                                                            <input ng2-auto-complete [source]="products" [list-formatter]="autocompleListFormatter" (valueChanged)="valueProductChanged($event,i)" display-property-name="name" placeholder="Tên Sản Phẩm" class="form-control" formControlName="name">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" placeholder="Số Lượng" class="form-control input-xsmall" formControlName="qty">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" placeholder="Đơn Giá" class="form-control" formControlName="price">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" placeholder="Kiểu Giảm Giá" class="form-control" formControlName="discout">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" placeholder="Giá Trị Giảm Giá" class="form-control" formControlName="discout_total">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" placeholder="Ghi Chú" class="form-control" formControlName="note">
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" (click)="removeItem(i)" class="btn btn-danger"><i class="fa fa-times"></i></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
                                 </div>
                             </div>
                             <div class="panel-footer">
-                                <button (click)="addItem()" type="button" class="btn btn-primary">Thêm Sản Phẩm</button>
+                                <button (click)="addItem()" type="button" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                                <button type="submit" class="btn btn-primary float-right">Lưu</button>
+                                <button type="reset" class="btn btn-default float-right">Làm Mới</button>
                             </div>
                         </div>
                     </div>
