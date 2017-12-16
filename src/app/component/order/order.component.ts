@@ -55,12 +55,15 @@ export class OrderComponent implements OnInit {
     this.orderForm.get('items').valueChanges.subscribe(res=>{
       var total=0;
       var sub_total=0;
-      res.forEach(element => {
+      res.forEach((element,index) => {
         if(element.price!=''){
           total+= (element.price * element.qty);
         }
       });
-      this.orderForm.patchValue({grand_total:total,subtotal:total})
+      this.orderForm.patchValue({
+        grand_total:total,
+        subtotal:total
+      })
     })
   }
   valueUserChanged(value){
@@ -80,7 +83,6 @@ export class OrderComponent implements OnInit {
       },
       price:value.price,
     })
-    console.log(this.items.controls[i].value)
   }
   get items(){
     return this.orderForm.get('items') as FormArray;
@@ -95,10 +97,12 @@ export class OrderComponent implements OnInit {
         name:product?product.name:''
       }),
       qty:1,
-      price:product?product.price:'',
-      discout:'',
-      discout_total:'',
-      note:'',
+      price:product?product.price:0,
+      discout_percent:0,
+      discout_fixed:0,
+      note:'',    
+      total:product?product.price*1:0,
+      
     }))
   }
   removeItem(index){
@@ -123,8 +127,8 @@ export class OrderComponent implements OnInit {
     const items=[];
     order.items.forEach(element => {
       const item = this.fb.group({
-        discout:element.discout,
-        discout_total:element.discout_total,
+        discout_percent:element.discout_percent,
+        discout_fixed:element.discout_fixed,
         note:element.note,
         order:element.order,
         price:element.price,
