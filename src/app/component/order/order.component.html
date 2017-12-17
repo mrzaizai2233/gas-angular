@@ -84,6 +84,7 @@
                                                         <th>Giảm tiền</th>
                                                         <th>Ghi chú</th>
                                                         <th>Thành Tiền</th>
+                                                        <th>Nợ Vỏ</th>                                                        
                                                         <th>Chức năng</th>
                                                     </tr>
                                                 </thead>
@@ -100,7 +101,7 @@
                                                             <input type="number" placeholder="Số Lượng" class="form-control input-xsmall" formControlName="qty">
                                                         </td>
                                                         <td>
-                                                            <input type="number" placeholder="Đơn Giá" class="form-control" formControlName="price">
+                                                            <input type="text" placeholder="Đơn Giá" class="form-control" formControlName="price">
                                                         </td>
                                                         <td>
                                                             <input type="text" placeholder="Giảm % " class="form-control" formControlName="discout_percent">
@@ -115,6 +116,9 @@
                                                             <input type="text" placeholder="Thành Tiền" class="form-control" formControlName="total">
                                                         </td>
                                                         <td>
+                                                                <div class="checkbox"><label><input formControlName="status" tabindex="5" type="checkbox"/></label></div>
+                                                        </td>
+                                                        <td>
                                                             <button type="button" (click)="removeItem(i)" class="btn btn-danger"><i class="fa fa-times"></i></button>
                                                         </td>
                                                     </tr>
@@ -122,9 +126,15 @@
 
                                             </table>
                                         </div>
-
+                                        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 float-right">
+                                                <div class="form-group">
+                                                        <label for="inputUsername" class="control-label">Nợ<span class="require">*</span></label>
+                                                        <div class="checkbox"><label><input formControlName="status" tabindex="5" type="checkbox"/></label></div>
+                                                </div>
+                                            </div>
                                         <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 float-right">
                                             <div class="form-group">
+                                                    <label for="inputUsername" class="control-label">Tổng Tiền <span class="require">*</span></label>
                                                 <div class="input-icon right">
                                                     <input type="text" placeholder="Tổng giá trị" class="form-control" formControlName="grand_total">
                                                 </div>
@@ -132,6 +142,7 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 float-right">
                                             <div class="form-group">
+                                                    <label for="inputUsername" class="control-label">Tiền Đã Trả <span class="require">*</span></label>
                                                 <div class="input-icon right">
                                                     <input type="text" placeholder="Số tiền đã trả" class="form-control" formControlName="subtotal">
                                                 </div>

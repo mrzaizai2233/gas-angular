@@ -7,6 +7,8 @@ import { Component, OnInit, OnChanges, ElementRef,ViewChild } from '@angular/cor
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import {Observable} from 'rxjs/Observable'
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/scan';
+
 import { myEvent,product } from './order';
 @Component({
   selector: 'app-order',
@@ -34,6 +36,15 @@ export class OrderComponent implements OnInit {
     console.log(test.target.value)
   }
   ngOnInit() {
+
+
+    const inputEle = <HTMLInputElement>this.input.nativeElement;
+    Observable.fromEvent<any>(inputEle, 'keyup')
+      .subscribe(data => console.log(data.target.value));
+
+
+
+      
     this.orderForm = this.fb.group({
       _id:[],
       user:this.fb.group({
@@ -43,28 +54,75 @@ export class OrderComponent implements OnInit {
         code:[],
         phone:[]
       }),
+      status:[],
       grand_total:[],
       subtotal:[],
       items:this.fb.array([])
     })
-    const inputEle = <HTMLInputElement>this.input.nativeElement;
-    Observable.fromEvent<any>(inputEle, 'keyup')
-      .subscribe(data => console.log(data.target.value));
 
 
-    this.orderForm.get('items').valueChanges.subscribe(res=>{
-      var total=0;
+
+    this.orderForm.get('items').valueChanges.scan(function(old,value){
+      let items = [];
+      value.forEach(function (item,index) {
+
+          if(old[index]){
+            if(item.discout_fixed!= old[index].discout_fixed){
+              item.discout_percent = 0;            
+            } else if(item.discout_percent!= old[index].discout_percent) {
+              item.discout_fixed = 0;
+            }
+          }
+          console.log(item.discout_percent)
+          console.log(item.discout_fixed)
+          // console.log(item);
+          items.push(item);
+        });
+        return items;
+    }).subscribe(res=>{
+
+      // console.log("change");
+      
+      // console.log(res);
+
+              var totals=0;
       var sub_total=0;
       res.forEach((element,index) => {
-        if(element.price!=''){
-          total+= (element.price * element.qty);
-        }
+        // this.validatorFrom(element);
+          if(element.qty>0 && element.price>=0 && typeof element.price == 'number' && typeof element.qty == 'number' ){
+            element.total =0;
+            let total = element.price *element.qty;
+            if(element.discout_percent==0){
+              element.discout_percent = (parseInt(element.discout_fixed)/total)*100;            
+            } else {
+              element.discout_fixed =  (total*parseInt(element.discout_percent,10))/100;
+            }        
+            total = total - element.discout_fixed;
+            this.items.controls[index].patchValue({total:total,discout_fixed:element.discout_fixed,discout_percent:element.discout_percent}, {emitEvent: false});
+              totals+= total;
+          } else {
+            totals+=0;
+            
+          }
+
       });
       this.orderForm.patchValue({
-        grand_total:total,
-        subtotal:total
-      })
+        grand_total:totals,
+        subtotal:totals
+      }, {emitEvent: false})
     })
+  }
+  validatorFrom(element){
+      if(element.qty ||element.price <= 0  ){
+        alert("số lượng phải lớn hơn 0");
+        return false;        
+      }
+      if(typeof element.qty || typeof element.price !== 'number'){
+        alert("kiểu nhập vào phải là kiểu số")
+        return false;
+      }
+
+      return true;
   }
   valueUserChanged(value){
         this.orderForm.get('user').patchValue({
@@ -82,6 +140,7 @@ export class OrderComponent implements OnInit {
         name:value.name
       },
       price:value.price,
+      total:value.price
     })
   }
   get items(){
@@ -97,6 +156,7 @@ export class OrderComponent implements OnInit {
         name:product?product.name:''
       }),
       qty:1,
+      status:0,
       price:product?product.price:0,
       discout_percent:0,
       discout_fixed:0,
@@ -109,7 +169,6 @@ export class OrderComponent implements OnInit {
           this.items.removeAt(index)
   }
   editOrder(order){
-      console.log(order.user);
     this.orderForm.patchValue({
       _id:order._id,
       grand_total:order.grand_total,
@@ -136,6 +195,8 @@ export class OrderComponent implements OnInit {
           _id:element.product._id,
           name:element.product.name
         }),
+        total:(element.price*element.qty) - element.discout_fixed,
+        status:element.status?element.status:0,
         qty:element.qty,
         _id:element._id,
       })
@@ -159,6 +220,7 @@ export class OrderComponent implements OnInit {
   preSave(){
     const order=this.orderForm.value;
     order.user = order.user._id;
+    order.status = order.status?order.status:0;
     const items=[];
     for(let i=0;i<this.items.length;i++){
       let item =this.items.controls[i].value;

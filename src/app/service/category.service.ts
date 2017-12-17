@@ -6,7 +6,7 @@ export class CategoryService {
   categoryEmiter:EventEmitter<any> = new EventEmitter();
   editToListEmiter:EventEmitter<any> = new EventEmitter();
   constructor(private _http:Http) { }
-  link:string = 'http://localhost:8042/api';
+  link:string = 'http://localhost:8042/api/';
   list(){
     return this._http.get(this.link+'/categorys').map( res=>res.json());
   }

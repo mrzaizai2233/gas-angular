@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class OrderService {
 
-  private url = 'http://localhost:8042/api';
+  private url = 'http://localhost:8042/api/';
   constructor(private _http:HttpClient) { }
   orders (){
     return this._http.get(this.url+'/orders')
