@@ -21,5 +21,8 @@ export class OrderService {
   edit(order){
     return this._http.post(this.url+'/order/update',order)
   }
+  changeStatus(_id){
+    return this._http.post(this.url+'/order/changeStatus',{_id:_id})
+  }
   
 }

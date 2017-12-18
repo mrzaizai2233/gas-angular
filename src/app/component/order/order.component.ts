@@ -21,6 +21,7 @@ export class OrderComponent implements OnInit {
   users;
   products;
   orders=[];
+  state="create";
   constructor(private fb:FormBuilder,private _userService:UserService,private _productService:ProductService,private _sanitizer:DomSanitizer,private _orderService:OrderService) {
     this._userService.users().subscribe(res => this.users=res)
     this._productService.products().subscribe(res=>this.products=res)
@@ -179,12 +180,14 @@ export class OrderComponent implements OnInit {
         address:order.user.address,
         phone:order.user.phone
       },
+      status:order.status==1?true:false
     })
     this.items.controls=[]
     // const arr = <FormArray>this.orderForm.controls.items;
     // arr.controls = [];
     const items=[];
-    order.items.forEach(element => {
+    
+    if(order.items.length > 0) order.items.forEach(element => {
       const item = this.fb.group({
         discout_percent:element.discout_percent,
         discout_fixed:element.discout_fixed,
@@ -196,7 +199,7 @@ export class OrderComponent implements OnInit {
           name:element.product.name
         }),
         total:(element.price*element.qty) - element.discout_fixed,
-        status:element.status?element.status:0,
+        status:element.status?element.status:false,
         qty:element.qty,
         _id:element._id,
       })
@@ -220,12 +223,12 @@ export class OrderComponent implements OnInit {
   preSave(){
     const order=this.orderForm.value;
     order.user = order.user._id;
-    order.status = order.status?order.status:0;
+    order.status = order.status==1?true:false;
     const items=[];
     for(let i=0;i<this.items.length;i++){
       let item =this.items.controls[i].value;
-      item.product =  this.items.controls[i].value.product._id;
-      items.push(item)
+        item.product =  this.items.controls[i].value.product._id;
+        items.push(item)
     }
     order.items = items;
     return order;
@@ -241,6 +244,15 @@ export class OrderComponent implements OnInit {
         }
       }
     })
+  }
+  changeStatus(){
+    // console.log('change');
+    
+    let _id = this.orderForm.get('_id').value ;
+    // console.log(_id);
+    if(_id!=null){
+      this._orderService.changeStatus(_id).subscribe()
+    }    
   }
   ngAfterViewInit() {
     // Component views are initialized
