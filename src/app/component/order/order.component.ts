@@ -2,7 +2,7 @@ import { element } from 'protractor';
 import { OrderService } from './../../service/order.service';
 import { ProductService } from './../../service/product.service';
 import { UserService } from './../../service/user.service';
-import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { Component, OnInit, OnChanges, ElementRef,ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import {Observable} from 'rxjs/Observable'
@@ -49,22 +49,27 @@ export class OrderComponent implements OnInit {
     this.orderForm = this.fb.group({
       _id:[],
       user:this.fb.group({
-        _id:[],
-        name:[],
-        adress:[],
-        code:[],
-        phone:[]
+        _id:['',[Validators.required]],
+        name:['',[Validators.required]],
+        adress:['',[Validators.required]],
+        code:['',[Validators.required]],
+        phone:['',[Validators.required]]
       }),
       status:[],
-      grand_total:[],
-      subtotal:[],
-      items:this.fb.array([])
+      grand_total:['',Validators.min(0)],
+      subtotal:['',Validators.min(0)],
+      items:this.fb.array([],Validators.required)
     })
 
 
 
     this.orderForm.get('items').valueChanges.scan(function(old,value){
+      // console.log(old);
+      // console.log(value);
+      
+      
       let items = [];
+      const $this = this;
       value.forEach(function (item,index) {
 
           if(old[index]){
@@ -74,9 +79,23 @@ export class OrderComponent implements OnInit {
               item.discout_fixed = 0;
             }
           }
-          console.log(item.discout_percent)
-          console.log(item.discout_fixed)
-          // console.log(item);
+          console.log(item);
+          
+          // console.log(item.discout_fixed);
+          
+          item.discout_fixed = $this.checkNumber(item.discout_fixed);
+          // console.log(item.discout_percent);
+          
+          item.discout_percent = $this.checkNumber(item.discout_percent);
+          // console.log(item.price);
+          
+          item.price = $this.checkNumber(item.price);
+          // console.log(item.qty);
+          
+          item.qty = $this.checkNumber(item.qty);
+          // console.log(item.total);
+          
+          item.total = $this.checkNumber(item.total);
           items.push(item);
         });
         return items;
@@ -90,14 +109,17 @@ export class OrderComponent implements OnInit {
       var sub_total=0;
       res.forEach((element,index) => {
         // this.validatorFrom(element);
-          if(element.qty>0 && element.price>=0 && typeof element.price == 'number' && typeof element.qty == 'number' ){
+          if(element.qty>0 && element.price>=0 && element.price !='' && typeof element.price == 'number' && typeof element.qty == 'number' ){
             element.total =0;
             let total = element.price *element.qty;
-            if(element.discout_percent==0){
-              element.discout_percent = (parseInt(element.discout_fixed)/total)*100;            
-            } else {
-              element.discout_fixed =  (total*parseInt(element.discout_percent,10))/100;
-            }        
+            if(element.discout_percent && element.discout_fixed != '' ){
+              if(element.discout_percent==0){
+                element.discout_percent = (parseInt(element.discout_fixed)/total)*100;            
+              } else {
+                element.discout_fixed =  (total*parseInt(element.discout_percent,10))/100;
+              }
+            }
+        
             total = total - element.discout_fixed;
             this.items.controls[index].patchValue({total:total,discout_fixed:element.discout_fixed,discout_percent:element.discout_percent}, {emitEvent: false});
               totals+= total;
@@ -144,6 +166,12 @@ export class OrderComponent implements OnInit {
       total:value.price
     })
   }
+  checkNumber(data){
+    console.log(data);
+    if(typeof data != 'number' || data <0 )
+    return 0;
+    return data;
+  }
   get items(){
     return this.orderForm.get('items') as FormArray;
   }
@@ -153,16 +181,16 @@ export class OrderComponent implements OnInit {
     this.items.push(this.fb.group({
       _id:[],
       product:this.fb.group({
-        _id:product?product._id:'',
+        _id:[product?product._id:'',[Validators.required]],
         name:product?product.name:''
       }),
-      qty:1,
+      qty:[1,[Validators.required,Validators.min(0)]],
       status:0,
-      price:product?product.price:0,
-      discout_percent:0,
-      discout_fixed:0,
+      price:[product?product.price:0,[Validators.min(0)]],
+      discout_percent:[0,[Validators.min(0)]],
+      discout_fixed:[0,[Validators.min(0)]],
       note:'',    
-      total:product?product.price*1:0,
+      total:[product?product.price*1:0,[Validators.min(0)]],
       
     }))
   }
@@ -213,12 +241,12 @@ export class OrderComponent implements OnInit {
   //   }
   }
   onSubmit(){
-    console.log(this.orderForm.value)
-    const order = this.preSave();
+    console.log(this.orderForm)
+    // const order = this.preSave();
       // console.log(this.preSave());
-    this._orderService.create(order).subscribe(res=>{
-      this.orders.push(res);
-    })
+    // this._orderService.create(order).subscribe(res=>{
+      // this.orders.push(res);
+    // })
   }
   preSave(){
     const order=this.orderForm.value;
