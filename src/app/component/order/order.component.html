@@ -42,7 +42,7 @@
                             </div>
                         </div>
                     </div>
-                        {{items.errors | json}}
+                    {{items.errors | json}}
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="panel panel-orange">
                             <div class="panel-heading clearfix">
@@ -84,11 +84,11 @@
                                                         <th>Giảm tiền</th>
                                                         <th>Ghi chú</th>
                                                         <th>Thành Tiền</th>
-                                                        <th>Nợ Vỏ</th>                                                        
+                                                        <th>Nợ Vỏ</th>
                                                         <th>Chức năng</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody formGroupName="items" colspan="5"  *ngIf="items.length>0">
+                                                <tbody formGroupName="items" colspan="5" *ngIf="items.length>0">
                                                     <tr *ngFor="let item of items.controls; let i=index" [formGroupName]="i">
                                                         <input type="hidden" formControlName="_id">
                                                         <td>
@@ -98,7 +98,8 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <input type="number" placeholder="Số Lượng" class="form-control input-xsmall" formControlName="qty">
+                                                            <!-- (keypress)="checkNumber($event)" #qty (ngModelChange)="checkValue($event,qty)" -->
+                                                            <input type="text" (ngModelChange)="checkValue($event,'qty',i)" placeholder="Số Lượng" class="form-control input-xsmall" formControlName="qty">
                                                         </td>
                                                         <td>
                                                             <input type="text" placeholder="Đơn Giá" class="form-control" formControlName="price">
@@ -116,7 +117,7 @@
                                                             <input type="text" placeholder="Thành Tiền" class="form-control" formControlName="total">
                                                         </td>
                                                         <td>
-                                                                <div class=""><label><input formControlName="status" tabindex="5" type="checkbox"/></label></div>
+                                                            <div class=""><label><input formControlName="status" tabindex="5" type="checkbox"/></label></div>
                                                         </td>
                                                         <td>
                                                             <button type="button" (click)="removeItem(i)" class="btn btn-danger"><i class="fa fa-times"></i></button>
@@ -127,14 +128,14 @@
                                             </table>
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 float-right">
-                                                <div class="form-group">
-                                                        <label for="inputUsername" class="control-label">Nợ<span class="require">*</span></label>
-                                                        <div class=""><label><input formControlName="status" [checked]="orderForm.status" tabindex="5" type="checkbox" (change)="changeStatus()"/></label></div>
-                                                </div>
+                                            <div class="form-group">
+                                                <label for="inputUsername" class="control-label">Nợ<span class="require">*</span></label>
+                                                <div class=""><label><input formControlName="status" [checked]="orderForm.status" tabindex="5" type="checkbox" (change)="changeStatus()"/></label></div>
                                             </div>
+                                        </div>
                                         <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 float-right">
                                             <div class="form-group">
-                                                    <label for="inputUsername" class="control-label">Tổng Tiền <span class="require">*</span></label>
+                                                <label for="inputUsername" class="control-label">Tổng Tiền <span class="require">*</span></label>
                                                 <div class="input-icon right">
                                                     <input type="text" placeholder="Tổng giá trị" class="form-control" formControlName="grand_total">
                                                 </div>
@@ -142,7 +143,7 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 float-right">
                                             <div class="form-group">
-                                                    <label for="inputUsername" class="control-label">Tiền Đã Trả <span class="require">*</span></label>
+                                                <label for="inputUsername" class="control-label">Tiền Đã Trả <span class="require">*</span></label>
                                                 <div class="input-icon right">
                                                     <input type="text" placeholder="Số tiền đã trả" class="form-control" formControlName="subtotal">
                                                 </div>

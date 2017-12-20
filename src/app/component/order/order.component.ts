@@ -10,6 +10,7 @@ import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/scan';
 
 import { myEvent,product } from './order';
+
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
@@ -64,14 +65,9 @@ export class OrderComponent implements OnInit {
 
 
     this.orderForm.get('items').valueChanges.scan(function(old,value){
-      // console.log(old);
-      // console.log(value);
-      
-      
       let items = [];
       const $this = this;
       value.forEach(function (item,index) {
-
           if(old[index]){
             if(item.discout_fixed!= old[index].discout_fixed){
               item.discout_percent = 0;            
@@ -79,36 +75,20 @@ export class OrderComponent implements OnInit {
               item.discout_fixed = 0;
             }
           }
-          console.log(item);
-          
-          // console.log(item.discout_fixed);
-          
-          item.discout_fixed = $this.checkNumber(item.discout_fixed);
-          // console.log(item.discout_percent);
-          
-          item.discout_percent = $this.checkNumber(item.discout_percent);
-          // console.log(item.price);
-          
-          item.price = $this.checkNumber(item.price);
-          // console.log(item.qty);
-          
-          item.qty = $this.checkNumber(item.qty);
-          // console.log(item.total);
-          
-          item.total = $this.checkNumber(item.total);
           items.push(item);
         });
         return items;
     }).subscribe(res=>{
-
-      // console.log("change");
+      console.log('change');
       
-      // console.log(res);
-
-              var totals=0;
+      var totals=0;
       var sub_total=0;
       res.forEach((element,index) => {
-        // this.validatorFrom(element);
+          element.price = this.checkNull(element.price);
+          element.qty = this.checkNull(element.qty);
+          element.discout_percent = this.checkNull(element.discout_percent);
+          element.discout_fixed = this.checkNull(element.discout_fixed);
+          
           if(element.qty>0 && element.price>=0 && element.price !='' && typeof element.price == 'number' && typeof element.qty == 'number' ){
             element.total =0;
             let total = element.price *element.qty;
@@ -166,11 +146,35 @@ export class OrderComponent implements OnInit {
       total:value.price
     })
   }
-  checkNumber(data){
-    console.log(data);
-    if(typeof data != 'number' || data <0 )
+  checkNull(data){
+    if(data ==='' || data === null || data < 0)
     return 0;
     return data;
+  }
+  checkNumber(event){
+    // console.log(event);
+    // console.log(+event.key);
+    
+    if(typeof +event.key != 'number'){
+        event.preventDefault();
+        
+    }
+    // return 0;
+    // return data;
+  }
+  checkValue(value,element,index){
+    console.log(element);
+    
+  //   if(typeof value != 'number'){
+  //     console.log("tru");
+      
+  //     value = value.slice(0,value.length-1);
+  //     this.items.controls[index].patchValue({qty:value}, {emitEvent: false})
+      
+  // }
+    
+    // console.log(event);
+
   }
   get items(){
     return this.orderForm.get('items') as FormArray;
