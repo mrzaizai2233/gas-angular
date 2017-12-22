@@ -1,3 +1,4 @@
+import { OnlyNumber } from './only-number.directive';
 import { OrderService } from './../../service/order.service';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -8,7 +9,6 @@ import { CommonModule } from '@angular/common';
 import { OrderComponent } from './order.component';
 import { OrderRouterModule } from './order-router.module';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
-
 @NgModule({
   imports: [
     CommonModule,
@@ -18,7 +18,7 @@ import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
     Ng2AutoCompleteModule,
     FormsModule 
   ],
-  declarations: [OrderComponent],
+  declarations: [OrderComponent,OnlyNumber],
   providers:[
     ProductService,
     UserService,

@@ -99,22 +99,22 @@
                                                         </td>
                                                         <td>
                                                             <!-- (keypress)="checkNumber($event)" #qty (ngModelChange)="checkValue($event,qty)" -->
-                                                            <input type="text" (ngModelChange)="checkValue($event,'qty',i)" placeholder="Số Lượng" class="form-control input-xsmall" formControlName="qty">
+                                                            <input type="text" OnlyNumber [DefaultValue]="1" placeholder="Số Lượng" class="form-control input-xsmall" formControlName="qty">
                                                         </td>
                                                         <td>
-                                                            <input type="text" placeholder="Đơn Giá" class="form-control" formControlName="price">
+                                                            <input type="text" OnlyNumber [DefaultValue]="1"placeholder="Đơn Giá" class="form-control" formControlName="price">
                                                         </td>
                                                         <td>
-                                                            <input type="text" placeholder="Giảm % " class="form-control" formControlName="discout_percent">
+                                                            <input type="text" OnlyNumber [DefaultValue]="0" placeholder="Giảm % " class="form-control" formControlName="discout_percent">
                                                         </td>
                                                         <td>
-                                                            <input type="text" placeholder="Giảm tiền" class="form-control" formControlName="discout_fixed">
+                                                            <input type="text" OnlyNumber [DefaultValue]="0" placeholder="Giảm tiền" class="form-control" formControlName="discout_fixed">
                                                         </td>
                                                         <td>
                                                             <input type="text" placeholder="Ghi Chú" class="form-control" formControlName="note">
                                                         </td>
                                                         <td>
-                                                            <input type="text" placeholder="Thành Tiền" class="form-control" formControlName="total">
+                                                            <input type="text" readonly placeholder="Thành Tiền" class="form-control" formControlName="total">
                                                         </td>
                                                         <td>
                                                             <div class=""><label><input formControlName="status" tabindex="5" type="checkbox"/></label></div>

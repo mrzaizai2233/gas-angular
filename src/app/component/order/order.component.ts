@@ -79,17 +79,11 @@ export class OrderComponent implements OnInit {
         });
         return items;
     }).subscribe(res=>{
-      console.log('change');
       
       var totals=0;
       var sub_total=0;
       res.forEach((element,index) => {
-          element.price = this.checkNull(element.price);
-          element.qty = this.checkNull(element.qty);
-          element.discout_percent = this.checkNull(element.discout_percent);
-          element.discout_fixed = this.checkNull(element.discout_fixed);
-          
-          if(element.qty>0 && element.price>=0 && element.price !='' && typeof element.price == 'number' && typeof element.qty == 'number' ){
+
             element.total =0;
             let total = element.price *element.qty;
             if(element.discout_percent && element.discout_fixed != '' ){
@@ -103,11 +97,7 @@ export class OrderComponent implements OnInit {
             total = total - element.discout_fixed;
             this.items.controls[index].patchValue({total:total,discout_fixed:element.discout_fixed,discout_percent:element.discout_percent}, {emitEvent: false});
               totals+= total;
-          } else {
-            totals+=0;
-            
-          }
-
+         
       });
       this.orderForm.patchValue({
         grand_total:totals,
@@ -115,18 +105,7 @@ export class OrderComponent implements OnInit {
       }, {emitEvent: false})
     })
   }
-  validatorFrom(element){
-      if(element.qty ||element.price <= 0  ){
-        alert("số lượng phải lớn hơn 0");
-        return false;        
-      }
-      if(typeof element.qty || typeof element.price !== 'number'){
-        alert("kiểu nhập vào phải là kiểu số")
-        return false;
-      }
 
-      return true;
-  }
   valueUserChanged(value){
         this.orderForm.get('user').patchValue({
           _id:value._id,
@@ -146,36 +125,7 @@ export class OrderComponent implements OnInit {
       total:value.price
     })
   }
-  checkNull(data){
-    if(data ==='' || data === null || data < 0)
-    return 0;
-    return data;
-  }
-  checkNumber(event){
-    // console.log(event);
-    // console.log(+event.key);
-    
-    if(typeof +event.key != 'number'){
-        event.preventDefault();
-        
-    }
-    // return 0;
-    // return data;
-  }
-  checkValue(value,element,index){
-    console.log(element);
-    
-  //   if(typeof value != 'number'){
-  //     console.log("tru");
-      
-  //     value = value.slice(0,value.length-1);
-  //     this.items.controls[index].patchValue({qty:value}, {emitEvent: false})
-      
-  // }
-    
-    // console.log(event);
 
-  }
   get items(){
     return this.orderForm.get('items') as FormArray;
   }
@@ -245,12 +195,11 @@ export class OrderComponent implements OnInit {
   //   }
   }
   onSubmit(){
-    console.log(this.orderForm)
-    // const order = this.preSave();
-      // console.log(this.preSave());
-    // this._orderService.create(order).subscribe(res=>{
-      // this.orders.push(res);
-    // })
+    const order = this.preSave();
+      console.log(this.preSave());
+    this._orderService.create(order).subscribe(res=>{
+      this.orders.push(res);
+    })
   }
   preSave(){
     const order=this.orderForm.value;
