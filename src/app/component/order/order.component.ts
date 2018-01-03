@@ -34,9 +34,7 @@ export class OrderComponent implements OnInit {
     let html = `<span>${data.name}</span>`;
     return this._sanitizer.bypassSecurityTrustHtml(html);
   }
-  testchange(test:myEvent){
-    console.log(test.target.value)
-  }
+
   ngOnInit() {
 
 
@@ -69,10 +67,13 @@ export class OrderComponent implements OnInit {
       const $this = this;
       value.forEach(function (item,index) {
           if(old[index]){
+            // console.log(item.discout_fixed);
+            // console.log(item.discout_percent);
+            
             if(item.discout_fixed!= old[index].discout_fixed){
-              item.discout_percent = 0;            
+              item.discout_percent = "change";            
             } else if(item.discout_percent!= old[index].discout_percent) {
-              item.discout_fixed = 0;
+              item.discout_fixed = "change";
             }
           }
           items.push(item);
@@ -81,21 +82,25 @@ export class OrderComponent implements OnInit {
     }).subscribe(res=>{
       
       var totals=0;
-      var sub_total=0;
       res.forEach((element,index) => {
-
+            
             element.total =0;
             let total = element.price *element.qty;
-            if(element.discout_percent && element.discout_fixed != '' ){
-              if(element.discout_percent==0){
-                element.discout_percent = (parseInt(element.discout_fixed)/total)*100;            
-              } else {
+            // console.log(total);
+            if(this.isset(element.discout_percent)==true && this.isset(element.discout_fixed)==true){
+              if(element.discout_percent=="change"){
+                element.discout_percent = (parseInt(element.discout_fixed)/total)*100;                          
+              } else {                
                 element.discout_fixed =  (total*parseInt(element.discout_percent,10))/100;
               }
             }
         
             total = total - element.discout_fixed;
-            this.items.controls[index].patchValue({total:total,discout_fixed:element.discout_fixed,discout_percent:element.discout_percent}, {emitEvent: false});
+            this.items.controls[index].patchValue({
+              total:total,
+              discout_fixed:element.discout_fixed,
+              discout_percent:element.discout_percent
+            }, {emitEvent: false});
               totals+= total;
          
       });
@@ -105,7 +110,11 @@ export class OrderComponent implements OnInit {
       }, {emitEvent: false})
     })
   }
-
+  isset(value){
+    if(value==='' || value===null || value === undefined || value !== value)
+      return false
+      return true
+  }
   valueUserChanged(value){
         this.orderForm.get('user').patchValue({
           _id:value._id,
@@ -129,7 +138,13 @@ export class OrderComponent implements OnInit {
   get items(){
     return this.orderForm.get('items') as FormArray;
   }
-
+  blur(item:myEvent,index){
+    if(this.isset(item.target.value)==false){
+      this.items.controls[index].patchValue({qty:1})
+    }
+      // console.log(item.target.value);
+      // console.log(index);
+  }
   addItem(product){
    
     this.items.push(this.fb.group({

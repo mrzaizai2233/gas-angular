@@ -1,0 +1,88 @@
+<div class="row">
+
+    <div class="panel panel-green">
+        <div class="panel-heading clearfix">
+            Khách Hàng
+
+        </div>
+        <div class="panel-body">
+
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Tên</th>
+                                <th>Mã Khách Hàng</th>
+                                <th>Địa Chỉ</th>
+                                <th>Số Điện Thoại</th>
+                                <th>Trạng Thái</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="users ">
+                            <tr *ngFor="let user of users  " (click)="edit(user)">
+                                <td>{{user.name}}</td>
+                                <td>{{user.code}}</td>
+                                <td>{{user.adress}}</td>
+                                <td>{{user.phone}}</td>
+                                <td>{{getStatusText(user.status)}}</td>
+                                <td><button type="button" class="btn btn-danger" (click)="delete(user._id)">Xóa</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="panel panel-orange">
+                    <div class="panel-body pan">
+                        <form (ngSubmit)="onSubmit()" [formGroup]="userForm">
+                            <input type="hidden" formControlName="_id">
+                            <div class="form-body pal">
+                                <div class="form-group">
+                                    <div class="input-icon right">
+                                        <input type="text" placeholder="Tên" class="form-control" formControlName="name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-icon right">
+                                        <input type="text" placeholder="Mã Khách Hàng" class="form-control" formControlName="code">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-icon right">
+                                        <input type="text" placeholder="Địa Chỉ" class="form-control" formControlName="adress">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-icon right">
+                                        <input type="text" placeholder="Số Điện Thoại" class="form-control" formControlName="phone">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Trạng Thái
+                        <select class="form-control" formControlName="status">
+                                        <option value="1">Bật</option>
+                                        <option value="0">Tắt</option>
+                        </select>
+                      </label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions text-right pal">
+                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                <button type="reset" class="btn btn-default text-left">Làm Mới</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

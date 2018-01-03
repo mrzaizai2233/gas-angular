@@ -37,17 +37,17 @@ export class OnlyNumber {
       
   }
 
-  @HostListener('blur',['$event.target.value']) onBlur(value){
-      if(this.input.value==='' || this.input.value === null)
-      {
-          this.input.value=this.DefaultValue;
-      } 
-  }
+//   @HostListener('blur',['$event.target.value']) onBlur(value){
+//       if(this.input.value==='' || this.input.value === null)
+//       {
+//           this.input.value=this.DefaultValue;
+//       } 
+//   }
 
-  @HostListener('change',['$event.target.value']) onChange(value){
-    if(this.input.value==='' || this.input.value === null)
-    {
-        this.input.value=this.DefaultValue;
-    } 
-}
+//   @HostListener('change',['$event.target.value']) onChange(value){
+//     if(this.input.value==='' || this.input.value === null)
+//     {
+//         this.input.value=this.DefaultValue;
+//     } 
+// }
 }

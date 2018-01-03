@@ -1,0 +1,23 @@
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <div class="panel panel-orange">
+        <div class="panel-body pan">
+            <form (ngSubmit)="onSubmit()" [formGroup]="categoryGroup">
+                <input type="hidden" formControlName="_id">
+                <div class="form-body pal">
+                    <div class="form-group" [class.state-error]=" categoryGroup.get('name')?.errors?.required && categoryGroup.get('name').touched">
+                        <div class="input-icon right"><i class="fa fa-user"></i><input type="text" #name placeholder="Name" class="form-control" formControlName="name"></div>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" formControlName="status">
+                                        <option value="0">Disable</option><option value="1">Enable</option>
+                                    </select>
+                    </div>
+                </div>
+                <div class="form-actions text-right pal"><button type="submit" class="btn btn-primary">Submit</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{categoryGroup.get('name').touched | json }}
+{{ categoryGroup.get('name').errors|json}}
