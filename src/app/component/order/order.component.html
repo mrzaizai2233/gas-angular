@@ -99,16 +99,16 @@
                                                         </td>
                                                         <td>
                                                             <!-- (keypress)="checkNumber($event)" #qty (ngModelChange)="checkValue($event,qty)" -->
-                                                            <input type="text" placeholder="Số Lượng" OnlyNumber (blur)="blur($event,i)" class="form-control input-xsmall" formControlName="qty">
+                                                            <input type="text" placeholder="Số Lượng"(keyup)="changeDiscout($event,i,'qty')" class="form-control input-xsmall" formControlName="qty">
                                                         </td>
                                                         <td>
                                                             <input type="text" placeholder="Đơn Giá" class="form-control" formControlName="price">
                                                         </td>
                                                         <td>
-                                                            <input type="text" placeholder="Giảm % " OnlyNumber class="form-control" formControlName="discout_percent">
+                                                            <input type="text" placeholder="Giảm % "  class="form-control" formControlName="discout_percent" (keyup)="changeDiscout($event,i,'percent')">
                                                         </td>
                                                         <td>
-                                                            <input type="text" placeholder="Giảm tiền" OnlyNumber class="form-control" formControlName="discout_fixed">
+                                                            <input type="text" placeholder="Giảm tiền"  class="form-control" formControlName="discout_fixed" (keyup)="changeDiscout($event,i,'fixed')">
                                                         </td>
                                                         <td>
                                                             <input type="text" placeholder="Ghi Chú" class="form-control" formControlName="note">

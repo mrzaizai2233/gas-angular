@@ -59,56 +59,44 @@ export class OrderComponent implements OnInit {
       subtotal:['',Validators.min(0)],
       items:this.fb.array([],Validators.required)
     })
-
-
-
-    this.orderForm.get('items').valueChanges.scan(function(old,value){
-      let items = [];
-      const $this = this;
-      value.forEach(function (item,index) {
-          if(old[index]){
-            // console.log(item.discout_fixed);
-            // console.log(item.discout_percent);
-            
-            if(item.discout_fixed!= old[index].discout_fixed){
-              item.discout_percent = "change";            
-            } else if(item.discout_percent!= old[index].discout_percent) {
-              item.discout_fixed = "change";
-            }
-          }
-          items.push(item);
-        });
-        return items;
-    }).subscribe(res=>{
       
-      var totals=0;
-      res.forEach((element,index) => {
-            
-            element.total =0;
-            let total = element.price *element.qty;
-            // console.log(total);
-            if(this.isset(element.discout_percent)==true && this.isset(element.discout_fixed)==true){
-              if(element.discout_percent=="change"){
-                element.discout_percent = (parseInt(element.discout_fixed)/total)*100;                          
-              } else {                
-                element.discout_fixed =  (total*parseInt(element.discout_percent,10))/100;
-              }
-            }
-        
-            total = total - element.discout_fixed;
-            this.items.controls[index].patchValue({
-              total:total,
-              discout_fixed:element.discout_fixed,
-              discout_percent:element.discout_percent
-            }, {emitEvent: false});
-              totals+= total;
-         
-      });
-      this.orderForm.patchValue({
-        grand_total:totals,
-        subtotal:totals
-      }, {emitEvent: false})
-    })
+  }
+
+  changeDiscout($event,index,element){
+    const item = this.items.controls[index];
+    let total = 0;
+    item.get('total').patchValue (
+      item.get('qty').value?item.get('price').value *  item.get('qty').value:0
+    )
+    if (element === "qty") {
+        item.get('discout_percent').patchValue(0)
+        item.get('discout_fixed').patchValue(0)
+      
+  }
+    if (element === "fixed") {
+      if (item.get('discout_fixed').value <= item.get('price').value) {
+        item.get('discout_percent').patchValue(
+          item.get('discout_fixed').value * 100 / item.get('total').value
+        )
+        item.get('discout_fixed').patchValue(
+          item.get('discout_fixed').value ? item.get('discout_fixed').value : 0
+        )
+      }
+  }
+  if (element === "percent") {
+      if (item.get('discout_percent').value <= 100) {
+        item.get('discout_fixed').patchValue (
+          item.get('total').value * item.get('discout_percent').value / 100
+          )
+      }
+      item.get('discout_percent').patchValue(
+        item.get('discout_percent').value ? item.get('discout_percent').value : 0
+      )
+  }
+    item.get('total').patchValue(
+      item.get('total').value -item.get('discout_fixed').value
+    )
+    console.log(item)
   }
   isset(value){
     if(value==='' || value===null || value === undefined || value !== value)

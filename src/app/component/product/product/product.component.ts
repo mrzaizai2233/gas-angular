@@ -9,7 +9,8 @@ import { Component, OnInit } from '@angular/core';
 export class ProductComponent implements OnInit {
   products=[];
   status="create";
-  constructor(private _productSV:ProductService) {
+  _productSV:ProductService
+  constructor( ) {
     this._productSV.products().subscribe(res=> {
      this.products = this.products.concat.apply(this.products,res)
     })
@@ -43,9 +44,6 @@ export class ProductComponent implements OnInit {
       })
   }
   getStatusText(status){
-    if(status=='in_stock')
-    return 'In Stock';
-    else
-    return 'Out Stock';
+    return status=='in_stock'?'In Stock':'Out Stock'
   }
 }
